@@ -3,19 +3,19 @@ import { Block } from './Block';
 import './index.scss';
 
 function App() {
-  const [fromCurrency, setFromCurrency]=useState('USD');
-  const [toCurrency, setToCurrency]=useState('USD');
+  const [fromCurrency, setFromCurrency]=useState('rub');
+  const [toCurrency, setToCurrency]=useState('usd');
   const [rates,setRates]=useState({});
   const [fromPrice,setFromPrice]=useState(0);
   const [toPrice,setToPrice]=useState(0);
 
 
   useEffect(()=>{
-    fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd.json`)
-      .then((res)=>res.json())
+    fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${fromCurrency}.json`)
+      .then((response)=> response.json())
       .then((json)=>{
-        setRates(json.rates)
-        console.log(json.rates)
+        setRates(json[fromCurrency][toCurrency])
+        console.log(json[fromCurrency][toCurrency])
       })
       .catch((err)=>{
         console.warn(err);
@@ -24,18 +24,18 @@ function App() {
   },[])
 
   const onChangeFromPrice=(value)=>{
-    const price=value/rates[fromCurrency];  
-    const result=price*rates[toCurrency];
+    // const price=value/rates[fromCurrency];  
+    // const result=price*rates[toCurrency];
+    const result=value*rates;
     setToPrice(result);
     setFromPrice(value);
   }
 
   const onChangeToPrice=(value)=>{
+    const result=value/rates;
+    setFromPrice(result)
     setToPrice(value);
   }
-
-
-
 
   return (
     <div className="App">
